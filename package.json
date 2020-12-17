@@ -1,0 +1,25 @@
+{
+  "name": "playaudio_nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@richienb/vlc": "^2.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cvlc": "^0.1.0",
+    "express": "^4.17.1",
+    "node-vlc-http": "^1.1.1",
+    "node-wav-player": "^0.2.0",
+    "nodemon": "^2.0.6",
+    "socket.io": "^3.0.4",
+    "vlc-control-node": "0.0.7"
+  }
+}
