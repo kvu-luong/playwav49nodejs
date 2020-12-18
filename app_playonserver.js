@@ -88,12 +88,6 @@ app.get('/', (req, res) => {;
     );
 })
 
-const utilities = require('./public/shareModule'); 
-   
-// Print ferquency of character 
-console.log(utilities.getFrequency("GeeksForGeeks"));  
-
-
 // const { VLC } = require('node-vlc-http');
 // const vlc = new VLC(
 //   'http://localhost',
@@ -135,7 +129,50 @@ const vlc = require("@richienb/vlc");
 
 // console.log(vlc);
  // let vlcs;
+async function play(vlc, link_audio, vlcs = null){
+  if(vlcs == null){
+    vlcs = await vlc();
+    try{
+      await vlcs.command("in_play", {
+        input: link_audio
+      })
+    return vlcs;
+    }catch(err){
+      console.log(err);
+    }
+  }else{
+    vlcs.then(async play => {
+      await play.command("in_play", {
+          input: link_audio
+        })
+    })
+  }
+}
+// play(vlc);
+async function pause(vlcs){
+   try{
+      if(vlcs != null){
+        vlcs.then(async pause => {
+             await pause.command("pl_pause");
+        })
+      }
+    }catch(err){
+       console.log(err);
+    }
+  
+}
 
+async function stop(vlcs){
+  try{
+    if(vlcs != null){
+      vlcs.then(async stop => {
+        await stop.command("pl_stop");
+      })
+    }
+  }catch(err){
+    console.log(err);
+  } 
+}
 
 // async function repeat(vlcs){
 //   // vlcs = await vlc();
@@ -164,24 +201,23 @@ io.on('connection', (socket) => {
   console.log(arr_socket);
 
     socket.on('play', (link_audio) => {
-        socket.emit('vlcFunction', vlc);
-       //  let checkStatus = checkStatusSocket(arr_socket, socket.id);
-       //  if(checkStatus ){
-       //    let vlcss =  play(vlc, link_audio, null);
-       //    setVlc(arr_socket, socket.id, vlcss);
-       //    setStatus(arr_socket, socket.id, true);
-       //    console.log('first');
-       //  }else{
-       //   console.log('seconde');
-       //    for(let i = 0; i < arr_socket.length; i++){
-       //      if(arr_socket[i].socket_id == socket.id){
-       //        console.log(arr_socket[i].vlc, 'stop before play');
-       //        stop(arr_socket[i].vlc);
-       //        let vlcss =  play(vlc, link_audio, arr_socket[i].vlc);
-       //      } 
-       //    }
-       //    console.log('stop and play again');
-       // }
+        let checkStatus = checkStatusSocket(arr_socket, socket.id);
+        if(checkStatus ){
+          let vlcss =  play(vlc, link_audio, null);
+          setVlc(arr_socket, socket.id, vlcss);
+          setStatus(arr_socket, socket.id, true);
+          console.log('first');
+        }else{
+         console.log('seconde');
+          for(let i = 0; i < arr_socket.length; i++){
+            if(arr_socket[i].socket_id == socket.id){
+              console.log(arr_socket[i].vlc, 'stop before play');
+              stop(arr_socket[i].vlc);
+              let vlcss =  play(vlc, link_audio, arr_socket[i].vlc);
+            } 
+          }
+          console.log('stop and play again');
+       }
       console.log(arr_socket, 'after play');
     })
  
